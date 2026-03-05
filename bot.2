@@ -1,0 +1,87 @@
+import org.telegram.telegrambots.bots.TelegramBot;
+import org.telegram.telegrambots.bots.TelegramWebhookBot;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import org.telegram.telegrambots.bots.AbsSender;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Update;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
+
+public class TelegramBot extends TelegramWebhookBot {
+
+    private final static String BOT_TOKEN = "8716063106:AAHsjGpYOmU7mgfvGd05mUwom0nlyfkDVmY"; // Replace with your bot token
+    private final static String BOT_USERNAME = "YOUR_BOT_USERNAME"; // Replace with your bot username
+    private List<String> sessionIDs = new ArrayList<>();
+    private static final int NUMBER_OF_BOTS = 20;
+
+    public TelegramBot() {
+        // Initialize session IDs for bots
+        for (int i = 0; i < NUMBER_OF_BOTS; i++) {
+            sessionIDs.add("SESSION_ID_".eJwVzllygjAAANATOaMIEj6ByBJZIy3RH8awGRRJCAL19G3fCV5r_rO4aLLieVpTA0on8EjxJM1edSx29LS8dJGbZ4-zCzxfv8RhJLhsuo2Eo5tx_6w__SsZ0FDxOKhYdB9r-01xmJvocmlZlHDPPsSAgTNF8btPDWWDt4UFVt-SnyYdBb4GqqKHkqKxd-AHQS2eOa_Uwky7R9Ya0Im4EoiBCf8HFPVCZtcw3l4tJwYb8tNdBy6tJNMOxP5LKVhlvZqQRexO_bSDpnYH2v5lgl24HXVat3gW1jo63SlQpdwcrSROsK2_2vU2VM36tZY4LsrvQkFz3i1kIQekyOp2Jzkw6yXzWxwCWFJP3Y4CeDOdlmkI2ZlSLH4BAq5wAg:1vyGD9:HQut5bx6_fwfoRK4DQAvaXWv_3X9pH-uGXgBmJbqf3s
+        }.eJwVwdmyQzAAANAv6oxItTyqLahW7fpiqIh9KY3l6-_cc4j47zZORShwJ1os0hC6StK2WWIhvFUIVEoEGM5Swv6xZnvFR87ooen-Lt3n5CsymI_dhhmWHFMXbr2phHCvcIvrC7vqILs9NPjGHmdbpEIcZNSXcLhD-o3Rx5FnjUrPLLkIctiqwyJDnYDLL2fH2qFzZ7AjKXK-oXDu0k2NBpiE5BRbn-1nlwJV65FyDDDwHDkVbEwxX_UA_Yoy72S0MFvQuOaHTtOrP_YxBSY1jPLave_jXMskUKdJ9PlSzDiscqmp9RrIfDU2ZFBX2Fq9M5VQadfAKO9NPDQ7Q9xrsHshyyMqzsc17d3vSKAcvxYNYT-m9Jz_AalhcNI:1vyGGD:cQKw1yxEJcj78yDslnYfhZyc6_D2tZCtykUHJc8OrHI
+    }
+
+    @Override
+    public String getBotUsername() {
+        return BOT_USERNAME;
+    }
+
+    @Override
+    public String getBotToken() {
+        return BOT_TOKEN;
+    }
+
+    @Override
+    public void onUpdateReceived(Update update) {
+        // Handle incoming messages and commands
+        if (update.hasMessage() && update.getMessage().hasText()) {
+            String commandText = update.getMessage().getText();
+            processCommand(commandText);
+        }
+    }
+
+    private void processCommand(String command) {
+        switch (command) {
+            case "/start":
+                sendResponse("Welcome! I will help you join Clubhouse rooms automatically.");
+                break;
+            case "/join":
+                joinClubhouseRooms();
+                sendResponse("Joining Clubhouse rooms...");
+                break;
+            default:
+                sendResponse("Unknown command. Use /join to start joining rooms.");
+        }
+    }
+
+    private void sendResponse(String message) {
+        SendMessage response = new SendMessage();
+        response.setChatId("YOUR_CHAT_ID"); // Replace with actual chat ID
+        response.setText(message);
+        try {
+            execute(response);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void joinClubhouseRooms() {
+        ExecutorService executor = Executors.newFixedThreadPool(NUMBER_OF_BOTS);
+        for (String sessionID : sessionIDs) {
+            executor.submit(() -> {
+                // Implementation for joining the Clubhouse room goes here.
+                // Example: ClubhouseAPI.joinRoom(sessionID);
+                System.out.println("Joining room with session ID: " + sessionID);
+                // Simulate room joining  
+                try {
+                    Thread.sleep(2000); // Simulate time delay for joining
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            });
+        }
+        executor.shutdown();
+    }
+}

@@ -1,0 +1,21 @@
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+public class ClubhouseClient {
+    private static final String API_BASE_URL = "https://api.clubhouse.io/";
+    private String sessionId;
+
+    public ClubhouseClient(String sessionId) {
+        this.sessionId = sessionId;
+    }
+
+    public void joinRoom(String roomId) {
+        // Implement room joining logic here using the sessionId
+        String url = API_BASE_URL + "rooms/" + roomId + "/join";
+        // Example pseudo-code for making HTTP POST request to join room
+        // HttpPost post = new HttpPost(url);
+        // post.setHeader("Authorization", "Bearer " + sessionId);
+        // ...
+    }
+
+    // Other methods to interact with Clubhouse API can be added here
+}
